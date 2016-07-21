@@ -9,36 +9,33 @@
 
     # Variable Section
     vars: 
-      #PASSED FROM VAGRANTFILE: {{HOST_SYNCED_FOLDER}}
-      #PASSED FROM VAGRANTFILE  {{VM_SYNCED_FOLDER}}
-      script_host_location: scripts/
+      #{{HOST_SYNCED_LOCATION}}
+      #{{VM_SYNCED_LOCATION}}
+      script_host_location: {{HOST_SYNCED_FOLDER}}/scripts/printIP.py
       script_vm_location: /opt/pythonscripts/
-      script_name: printIP.py
+   
 
 
     # --- Task Section ---
     tasks: 
-   
     - name: Update apt cache                      # Updating apt cache
       apt: update_cache=yes                   
      
     - name: Install Apache                        # Install Apache2 
       apt: name=apache2 state=latest              # Keeps it at the latest version
      
-    - name: Enabled mod_rewrite                   # Enables rewrite module
+    - name: enabled mod_rewrite                   # Enables rewrite module
       apache2_module: name=rewrite state=present
       notify:                                     # Restart Apache if changed=true
         - restart Apache2
 
-    - name: create a directory in /opt/ to store the python script
+    - name: create a directory in /opt            #
       file: state="directory" dest="{{script_vm_location}}/" mode="u=rwx" owner="vagrant"
 
 
-    - name: copy python script from host to vagrant
-      copy: src="{{script_host_location}}/{{script_name}}" dest="{{script_vm_location}}" 
+    - name: copy python script to the vagrantServer
+      copy: src="script_host_location" dest="{{script_vm_location" 
 
-    - name: Execute python script    
-      command: python "{{script_vm_location}}/{{script_name}}"
 
     # --- Handlers Section ---
     handlers: 
