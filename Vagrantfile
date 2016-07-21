@@ -12,6 +12,7 @@ MIN_VER = "1.8.4"
 DEFAULT_NETWORK_INTERFACE = "en0: Wi-Fi (AirPort)"
 HOST_SYNCED_FOLDER = "."
 VM_SYNCED_FOLDER = "/vagrant"
+ANSIBLE_VERBOSE = true
 
 
 # Forces the use of Vagrant 1.8.4 and higher, as specified in the requirement
@@ -31,7 +32,7 @@ Vagrant.configure("2") do |config|
 	#Provision vagrant with Ansible Remote
 	config.vm.provision "ansible" do |ansible|
 		ansible.playbook = "provisioning/playbook.yml"
-		ansible.verbose = true
+		ansible.verbose = ANSIBLE_VERBOSE
   		ansible.extra_vars = {HOST_SYNCED_FOLDER: HOST_SYNCED_FOLDER,  VM_SYNCED_FOLDER: VM_SYNCED_FOLDER}
 	end
 
