@@ -2,6 +2,20 @@
 #file: playbook.yml
 # Written By: Saed Alavinia (saedalav@gmail.com)
 
+# This playbook is executed from a vagrantfile. A few variables
+# are passed from vagrant to this playbook. (See comments in variable section)
+# they are not used, but are very helpful if synced folder are being used
+
+# On execution: 
+# 1. Updates apt cache to make sure the latest is available
+# 2. Installs apache2
+# 3. Enables mod_rewrite for apache 
+# 4. Creates a directory so that a prepared python script can be copied to 
+# 5. Copies the python script from host to vagrant 
+# 6. executes the python script
+#    Python script check http://checkip.dyndns.org and prints the output (an IP address)
+#    along with the timestamp into a file
+
   - hosts: all
     remote_user: vagrant
     become: true
@@ -11,9 +25,9 @@
     vars: 
       #PASSED FROM VAGRANTFILE: {{HOST_SYNCED_FOLDER}}
       #PASSED FROM VAGRANTFILE  {{VM_SYNCED_FOLDER}}
-      script_host_location: scripts/
-      script_vm_location: /opt/pythonscripts/
-      script_name: printIP.py
+      script_host_location: scripts/              #relative address where python scrip is available
+      script_vm_location: /opt/pythonscripts/     #location on vagrant vm where the script gets copied
+      script_name: printIP.py                     #name of the python script
 
 
     # --- Task Section ---
@@ -25,20 +39,21 @@
     - name: Install Apache                        # Install Apache2 
       apt: name=apache2 state=latest              # Keeps it at the latest version
      
-    - name: Enabled mod_rewrite                   # Enables rewrite module
+    - name: Enable mod_rewrite                   # Enables rewrite module
       apache2_module: name=rewrite state=present
       notify:                                     # Restart Apache if changed=true
         - restart Apache2
 
-    - name: create a directory in /opt/ to store the python script
+    - name: Create a directory to which script gets copied  #creates a folder to preserve mode
       file: state="directory" dest="{{script_vm_location}}/" mode="u=rwx" owner="vagrant"
 
-
-    - name: copy python script from host to vagrant
+    - name: Copy python script from host to vagrant #copies python to vagrant
       copy: src="{{script_host_location}}/{{script_name}}" dest="{{script_vm_location}}" 
 
-    - name: Execute python script    
+    - name: Execute python script #runs python script 
       command: python "{{script_vm_location}}/{{script_name}}"
+
+
 
     # --- Handlers Section ---
     handlers: 

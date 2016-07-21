@@ -7,11 +7,11 @@ import datetime
 import re
 
 # The target Url that we are reading the IP from
-targetUrl = "http://checkip.dyndns.org"
-req_version = (2,7)
-cur_version = sys.version_info
-verbose = True
-output_file = "/opt/pythonscripts/output.txt"
+targetUrl = "http://checkip.dyndns.org"		#target URL where IP address is read from
+req_version = (2,7)							#minimum required version in case it is not known
+cur_version = sys.version_info				#the version that the target system is running 
+verbose = False								#if verbose should be printed (set to True when vagrantfile's verbose is true)
+output_file = "/opt/pythonscripts/output.txt" #output file 
 
 
 
@@ -42,15 +42,21 @@ except urllib2.URLError as e:
 		quit()
 
 else: #200
+
+	#Here, the response has been received. using regular expression
+	# it attempts to extract IP address
 	body = resp.read()
 	pattern = re.findall('([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', body)
-	timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+	timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) #servertimestamp
 	try:
 		ip = pattern[0]
 		if verbose:
 			print("%s | %s" %(timestamp,ip))
+
+		# Append the output to a file in the following format:
+		# <datetimestamp> | <script output>
 		file = open(output_file, 'w')
 		file.write("%s | %s" %(timestamp,ip))
 		file.close
-	except IndexError as e: 
+	except IndexError as e: #In case IP address pattern is not available
 		print "The expected IPv4 pattern was not found in the output of the provided website"
