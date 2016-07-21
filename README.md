@@ -19,3 +19,6 @@ How To:
 - by default output.txt is stored in /opt/pythonscripts/output.txt on the vagrant machine
 - Note that the timestamp of the vagrant machine is UTC-01:00
 
+- View the other two branches:
+- 1. apache-index: further completes the base solution by configuring Apache's root document to be the output of the python script
+- 2. ansible-local: runs apache-index wihout having to install ansible on host machine
