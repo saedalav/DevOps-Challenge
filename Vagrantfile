@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
 
 	#Provision vagrant with Ansible Remote
 	config.vm.provision "ansible" do |ansible|
-		ansible.playbook = "playbook.yml"
+		ansible.playbook = "provisioning/playbook.yml"
 	end
 
 end

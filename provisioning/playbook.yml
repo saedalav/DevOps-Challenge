@@ -1,0 +1,33 @@
+---
+#file: playbook.yml
+# Written By: Saed Alavinia (saedalav@gmail.com)
+
+  - hosts: all
+    remote_user: vagrant
+    become: true
+    become_method: sudo
+
+    # Variable Section
+    vars: 
+      dummy: foo
+
+
+    # --- Task Section ---
+    tasks: 
+    - name: Update apt cache                      # Updating apt cache
+      apt: update_cache=yes                   
+     
+    - name: Install Apache                        # Install Apache2 
+      apt: name=apache2 state=latest              # Keeps it at the latest version
+     
+    - name: enabled mod_rewrite                   # Enables rewrite module
+      apache2_module: name=rewrite state=present
+      notify:                                     # Restart Apache if changed=true
+        - restart Apache2
+
+
+
+    # --- Handlers Section ---
+    handlers: 
+    - name: restart Apache2
+      service: name=apache2 state=restarted
