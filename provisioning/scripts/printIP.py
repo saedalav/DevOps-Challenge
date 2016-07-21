@@ -57,6 +57,7 @@ else: #200
 		# <datetimestamp> | <script output>
 		file = open(output_file, 'w')
 		file.write("%s | %s" %(timestamp,ip))
-		file.close
+		file.close()
 	except IndexError as e: #In case IP address pattern is not available
 		print "The expected IPv4 pattern was not found in the output of the provided website"
+		quit()
