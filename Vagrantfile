@@ -45,7 +45,10 @@ Vagrant.configure("2") do |config|
 	config.vm.synced_folder HOST_SYNCED_FOLDER,VM_SYNCED_FOLDER
 
 	#Provision vagrant with Ansible Remote
-	config.vm.provision "ansible" do |ansible|
+	#The new code attempts to install ansible on vagrant 
+	#and runs playbook.yml locally on vagrant
+	#It no longer needs to ansible on host
+	config.vm.provision "ansible_local" do |ansible|
 		ansible.playbook = "provisioning/playbook.yml"
 		ansible.verbose = ANSIBLE_VERBOSE
   		ansible.extra_vars = {HOST_SYNCED_FOLDER: HOST_SYNCED_FOLDER,  VM_SYNCED_FOLDER: VM_SYNCED_FOLDER}
