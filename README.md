@@ -19,3 +19,7 @@ How To:
 - by default output.txt is stored in /opt/pythonscripts/output.txt on the vagrant machine
 - Note that the timestamp of the vagrant machine is UTC-01:00
 
+On this branch: 
+- ansibles creates a new virtualhost.conf file and configures apache to use it
+- Python script creates a basic html page that displays the output as document root of apache 
+- Additionally, ansible outputs the ip address in terminal so that it is easy to test apache.
