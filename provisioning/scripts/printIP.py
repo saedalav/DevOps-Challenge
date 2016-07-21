@@ -10,7 +10,9 @@ import re
 targetUrl = "http://checkip.dyndns.org"
 req_version = (2,7)
 cur_version = sys.version_info
-verbose = False
+verbose = True
+output_file = "/opt/pythonscripts/output.txt"
+
 
 
 # Since the target machine's python version is known in advance,
@@ -29,13 +31,26 @@ except urllib2.HTTPError as e:
 	if e.code == 404: # Reaching Server, but not a valid resource #paranoia
 		if verbose:
 			print "Received %d from %s" %(e.code,targetUrl)
+			quit()
 	else: # Problem with server such as 500s, etc
 		if verbose:
 			print "Received %s"  %e.code
+			quit()
 except urllib2.URLError as e: 
 	if verbose:
 		print "Check your connection and/or url again."
+		quit()
 
 else: #200
-	if verbose:
-		print("Hello Python")
+	body = resp.read()
+	pattern = re.findall('([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', body)
+	timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+	try:
+		ip = pattern[0]
+		if verbose:
+			print("%s | %s" %(timestamp,ip))
+		file = open(output_file, 'w')
+		file.write("%s | %s" %(timestamp,ip))
+		file.close
+	except IndexError as e: 
+		print "The expected IPv4 pattern was not found in the output of the provided website"
