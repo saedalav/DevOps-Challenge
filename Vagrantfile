@@ -17,9 +17,15 @@
 # 	you may need to reset the value or commend out if not needed
 # 	see: https://www.vagrantup.com/docs/networking/public_network.html
 # 4. sets up vagrant synced folder (default is used)
+# 5. Attempts to install ansible on the vagrant box
 # 5. Delegates the provisioning task to ansible via playbook.yml
-# 	ansible must be installed on the host environment
 
+# Note: This solution frees you from having to install ansible 
+# on host machine. It is especially useful if you are using 
+# Windows as your host where ansible is not supported.
+# however, normally ansible has a master, controlling other
+# clients via ssh and therefore this is not standard solution.
+# See master and apache-index branches for other solutions
 
 
 # Variables
