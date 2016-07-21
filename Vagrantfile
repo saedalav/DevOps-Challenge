@@ -23,4 +23,9 @@ Vagrant.configure("2") do |config|
 	#Configuring VM with a public network address with DHCP assigned IP
 	config.vm.network "public_network",bridge: "#{DEFAULT_NETWORK_INTERFACE}"
 
+	#Provision vagrant with Ansible Remote
+	config.vm.provision "ansible" do |ansible|
+		ansible.playbook = "playbook.yml"
+	end
+
 end

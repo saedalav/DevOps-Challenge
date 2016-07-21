@@ -1,0 +1,16 @@
+---
+#file: playbook.yml
+# Written By: Saed Alavinia (saedalav@gmail.com)
+
+  - hosts: all
+    remote_user: vagrant
+    become: true
+    become_method: sudo
+
+    vars: 
+      dummy: foo
+
+    tasks: 
+      - name: Test Ping
+        ping: 
+
