@@ -5,7 +5,7 @@ A response to https://github.com/gbaker-blackbirdit/DevOps-Consultant-Challenge
 The solution uses the following tools: 
 Vagrant 1.8.5 
 Ansible 2.1.0.0 
-Python 2.7.10v
+Python 2.7.10
 
 How To: 
 - Make sure the host machine has vagrant (min 1.8.4) installed, 
