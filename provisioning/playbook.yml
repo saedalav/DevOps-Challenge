@@ -16,6 +16,9 @@
 #    Python script check http://checkip.dyndns.org and prints the output (an IP address)
 #    along with the timestamp into a file
 
+#An added part of the solution now creates a new folder in /var/www/html/ 
+#To change the index.html for apache
+
   - hosts: all
     remote_user: vagrant
     become: true
@@ -28,7 +31,14 @@
       script_host_location: scripts/              #relative address where python scrip is available
       script_vm_location: /opt/pythonscripts/     #location on vagrant vm where the script gets copied
       script_name: printIP.py                     #name of the python script
+    
 
+      #apache virtual host config
+      http_root_doc: /var/www/html/newroot
+      apache2_virtual_conf_location: /etc/apache2/sites-enabled/000-default.conf
+      template_name : virtualhost.conf
+      http_port: 80
+      server_admin: saedalav@gmail.com
 
     # --- Task Section ---
     tasks: 
@@ -50,8 +60,30 @@
     - name: Copy python script from host to vagrant #copies python to vagrant
       copy: src="{{script_host_location}}/{{script_name}}" dest="{{script_vm_location}}" 
 
+    #Part of the branched solution. Creating a new folder to act as the new document root
+    - name: create a directory in /var/www/html for our new index.html
+      file: state="directory" dest="{{http_root_doc}}" mode="u=rwx" owner="vagrant"
+
     - name: Execute python script #runs python script 
       command: python "{{script_vm_location}}/{{script_name}}"
+
+
+    #creates a new virtual host file for apache from apache template
+    - name: create virtual host file
+      template: src="{{template_name}}" dest="{{apache2_virtual_conf_location}}"
+      notify: 
+        - restart apache
+     
+    #Attempting to find the IP address to make testing easier
+    - name: Finding IP Address
+      set_fact:
+        public_ip: "{{ item }}"
+      with_items: "{{ansible_all_ipv4_addresses}}"
+      when: "item.startswith('192.168.')"
+
+      #Printing IP address to screen 
+    - name: Print IP Address 
+      debug: msg="Place {{public_ip}} in a browser to view an HTML version of the output"
 
 
 

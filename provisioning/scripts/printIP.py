@@ -13,6 +13,9 @@ cur_version = sys.version_info				#the version that the target system is running
 verbose = False								#if verbose should be printed (set to True when vagrantfile's verbose is true)
 output_file = "/opt/pythonscripts/output.txt" #output file 
 
+#This variable is part of the extended solution (branched from master)
+html_root = "/var/www/html/newroot/index.html"
+
 
 
 # Since the target machine's python version is known in advance,
@@ -57,6 +60,25 @@ else: #200
 		# <datetimestamp> | <script output>
 		file = open(output_file, 'w')
 		file.write("%s | %s" %(timestamp,ip))
-		file.close
+		file.close()
 	except IndexError as e: #In case IP address pattern is not available
 		print "The expected IPv4 pattern was not found in the output of the provided website"
+		quit()
+
+	# This part of the scrip is just to integrate with apache 
+	# and make sure everything is working
+	# Otherwise creating an html document with python (or any script) 
+	# is not a good idea at all!  
+	file = open(html_root, 'w')
+	file.write("<!DOCTYPE html>")
+	file.write("<html>")
+	file.write("<head><title>My Page</title></head>")
+	file.write("<body>")
+	file.write("%s | %s" %(timestamp,ip))
+	file.write("<br /><br />Consider hiring me if you see this page :)")
+	file.write("</body>")
+	file.write("</html>")
+	file.close()
+
+
+
